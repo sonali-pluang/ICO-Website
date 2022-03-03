@@ -107,7 +107,7 @@ contract('EnvToken', function(accounts){
         }).then ( allowance => {
             assert.equal(allowance.toNumber(), 0, 'deducts the amount from the allowance');
         });
-    });
+    })
 
 })
 
