@@ -14,11 +14,9 @@ App = {
   
     initWeb3: function() {
       if (typeof web3 !== 'undefined') {
-        // If a web3 instance is already provided by Meta Mask.
         App.web3Provider = web3.currentProvider;
         web3 = new Web3(web3.currentProvider);
       } else {
-        // Specify default instance if no web3 instance provided
         App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
         web3 = new Web3(App.web3Provider);
       }
@@ -40,7 +38,7 @@ App = {
           console.log("Env Token Address:", envToken.address);
           });
   
-         App.listenForEvents();
+        //  App.listenForEvents();
           return App.render();
         });
       })
@@ -48,10 +46,18 @@ App = {
   
     listenForEvents: () => {
       App.contracts.EnvTokenSale.deployed().then((instance) => {
+        console.log("Event listener")
+      //   web3.eth.subscribe(instance.Sell, {
+      //     fromBlock: 0,
+      //     toBlock: 'latest',
+      // }, function(error, result){
+      //     if (!error)
+      //         console.log(result);
+      // })
         instance.Sell({}, {
           fromBlock: 0,
           toBlock: 'latest',
-        }).watch((error, event) => {
+        }).then((event) => {
           console.log("event triggered", event);
           App.render();
         })
@@ -89,7 +95,7 @@ App = {
       }).then((tokenPrice) => {
         console.log(tokenPrice)
         App.tokenPrice = tokenPrice;
-        $('.token-price').html(App.tokenPrice.toNumber());
+        $('.token-price').html((App.tokenPrice.toNumber())/1000000000000000000);
         return envTokenSaleInstance.tokensSold();
       }).then((tokensSold) =>{
         App.tokensSold = tokensSold.toNumber();
@@ -126,7 +132,9 @@ App = {
       }).then((result) => {
         console.log("Tokens bought...")
         $('form').trigger('reset') 
+        console.log('form reset')
         // Waiting for Sell event
+        App.render();
       });
     }
   }
