@@ -40,12 +40,23 @@ App = {
           console.log("Env Token Address:", envToken.address);
           });
   
-         // App.listenForEvents();
+         App.listenForEvents();
           return App.render();
         });
       })
     },
   
+    listenForEvents: () => {
+      App.contracts.EnvTokenSale.deployed().then((instance) => {
+        instance.Sell({}, {
+          fromBlock: 0,
+          toBlock: 'latest',
+        }).watch((error, event) => {
+          console.log("event triggered", event);
+          App.render();
+        })
+      })
+    },
   
     render: async () =>{
       if (App.loading) {
@@ -69,14 +80,55 @@ App = {
           $('#accountAddress').html("Your Account: " + accounts[0]);
         }
       })
-
+  
+       // Load token sale contract
+       App.contracts.EnvTokenSale.deployed().then((instance) => {
+        envTokenSaleInstance = instance;
+        console.log(envTokenSaleInstance.tokenPrice())
+        return envTokenSaleInstance.tokenPrice();
+      }).then((tokenPrice) => {
+        console.log(tokenPrice)
+        App.tokenPrice = tokenPrice;
+        $('.token-price').html(App.tokenPrice.toNumber());
+        return envTokenSaleInstance.tokensSold();
+      }).then((tokensSold) =>{
+        App.tokensSold = tokensSold.toNumber();
+        $('.tokens-sold').html(App.tokensSold);
+        $('.tokens-available').html(App.tokensAvailable);
+  
+        let progressPercent = (Math.ceil(App.tokensSold) / App.tokensAvailable) * 100;
+        $('#progress').css('width', progressPercent + '%');
+  
+        // Load token contract
+        App.contracts.EnvToken.deployed().then((instance) => {
+          envTokenInstance = instance;
+          return envTokenInstance.balanceOf(App.account);
+        }).then((balance) => {
+          $('.dapp-balance').html(balance.toNumber());
           App.loading = false;
           loader.hide();
           content.show();
-  
+        })
+      });
     },
   
-    
+    buyTokens: function() {
+      $('#content').hide();
+      $('#loader').show();
+      var numberOfTokens = $('#numberOfTokens').val();
+      App.contracts.EnvTokenSale.deployed().then((instance) => {
+        envTokenSaleInstance = instance;
+        return envTokenSaleInstance.buyTokens(numberOfTokens, {
+          from: App.account,
+          value: numberOfTokens * App.tokenPrice,
+          gas: 500000 
+        });
+      }).then((result) => {
+        console.log("Tokens bought...")
+        $('form').trigger('reset') 
+        // Waiting for Sell event
+      });
+    }
   }
   
   $(function() {
