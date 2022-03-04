@@ -1,0 +1,20 @@
+{
+    "name": "env-token-sale",
+    "version": "1.0.0",
+    "description": "Env Token Sale ICO",
+    "main": "truffle-config.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "dev": "lite-server"
+    },
+    "author": "Sonali",
+    "license": "ISC",
+    "devDependencies": {
+        "lite-server": "^2.6.1"
+    },
+    "dependencies": {
+        "@truffle/contract": "^4.4.11"
+    }
+}
