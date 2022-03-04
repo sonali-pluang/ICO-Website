@@ -60,4 +60,26 @@ contract('EnvTokenSale', (accounts) => {
           assert(error.message.indexOf('revert') >= 0, 'cannot purchase more tokens than available');
         });
       });
+
+      it('ends token sale', () => {
+        return EnvToken.deployed().then((instance) => {
+          tokenInstance = instance;
+          return EnvTokenSale.deployed();
+        }).then((instance) => {
+          tokenSaleInstance = instance;
+          // Try to end sale from account other than the admin
+          return tokenSaleInstance.endSale({ from: buyer });
+        }).then(assert.fail).catch((error) =>  {
+          assert(error.message.indexOf('revert' >= 0, 'must be admin to end sale'));
+          // End the sale as admin
+          return tokenSaleInstance.endSale({ from: admin });
+        }).then((receipt) => {
+          return tokenInstance.balanceOf(admin);
+        }).then((balance) => {
+          assert.equal(balance.toNumber(), 999990, 'returns all unsold dapp tokens to admin');
+          // Check that the contract has no balance and values are reset
+          balance = web3.eth.getBalance(tokenSaleInstance.address)
+          assert.equal(balance.toNumber(), 0);
+        });
+      });
 })

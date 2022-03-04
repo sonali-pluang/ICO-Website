@@ -32,4 +32,12 @@ contract EnvTokenSale {
 
         emit Sell(msg.sender, _numberOfTokens);
     }
+
+    function endSale() public {
+        require(msg.sender == admin);
+        require( tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
+
+        //Reset all values and send all of the ether to admin
+        selfdestruct(payable(address(admin)));
+    }
 }
