@@ -110,7 +110,7 @@ App = {
           envTokenInstance = instance;
           return envTokenInstance.balanceOf(App.account);
         }).then((balance) => {
-          $('.dapp-balance').html(balance.toNumber());
+          $('.env-balance').html(balance.toNumber());
           App.loading = false;
           loader.hide();
           content.show();
