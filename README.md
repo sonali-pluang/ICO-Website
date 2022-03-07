@@ -29,7 +29,7 @@ The website also shows that how many tokens all users have purchased, tokens pre
  1. Open truffle console
 
     ```bash
-    npm i truffle
+    truffle console
     ```
 
 2. Deploy EnvToken Smart Contract and store in token variable.
