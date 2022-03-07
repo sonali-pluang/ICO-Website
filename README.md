@@ -1,7 +1,7 @@
 
 # Token Sale ICO Website
 
-![Website](https://drive.google.com/file/d/1gM-d3sCjYpalow32RV9qOlCl1wztBJjK/view)
+![Website](./ICO-Website-Screenshot.png)
 
 This is an ICO (Initial Coin Offering) website where users can purchase tokens in the crowd sale.
 The website also shows that how many tokens all users have purchased, tokens present in current user's wallet  and the total number of tokens available in the crowd sale.
